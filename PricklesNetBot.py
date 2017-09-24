@@ -22,8 +22,11 @@ class agent:
 	def convert_new_input_to_old_input(self, sharedValue):
 	
 		UU_TO_GAMEVALUES = 50
+		UCONST_Pi = 3.1415926
+		URotation180 = float(32768)
+		URotationToRadians = UCONST_Pi / URotation180 
 	
-		inputs = [None] * 20
+		inputs = [None] * 27
 	
 		gameTickPacket = sharedValue.GameTickPacket
 		
@@ -80,5 +83,19 @@ class agent:
 		# Boost
 		inputs[18] = gameTickPacket.gamecars[blueIndex].Boost
 		inputs[19] = gameTickPacket.gamecars[orngIndex].Boost
+
+		# Rotations
+		inputs[20] = float(gameTickPacket.gamecars[blueIndex].Rotation.Roll) * URotationToRadians
+		inputs[21] = float(gameTickPacket.gamecars[blueIndex].Rotation.Pitch) * URotationToRadians
+		inputs[22] = float(gameTickPacket.gamecars[blueIndex].Rotation.Yaw) * URotationToRadians
+		inputs[23] = float(gameTickPacket.gamecars[orngIndex].Rotation.Roll) * URotationToRadians
+		inputs[24] = float(gameTickPacket.gamecars[orngIndex].Rotation.Pitch) * URotationToRadians
+		inputs[25] = float(gameTickPacket.gamecars[orngIndex].Rotation.Yaw) * URotationToRadians
+
+		# Teams
+		if (self.team == "blue"):
+			inputs[26] = 1
+		else:
+			inputs[26] = 2 
 		
 		return inputs

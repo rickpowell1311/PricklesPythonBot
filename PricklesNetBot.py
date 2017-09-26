@@ -26,7 +26,7 @@ class agent:
 		URotation180 = float(32768)
 		URotationToRadians = UCONST_Pi / URotation180 
 	
-		inputs = [None] * 27
+		inputs = [None] * 39
 	
 		gameTickPacket = sharedValue.GameTickPacket
 		
@@ -85,17 +85,39 @@ class agent:
 		inputs[19] = gameTickPacket.gamecars[orngIndex].Boost
 
 		# Rotations
-		inputs[20] = float(gameTickPacket.gamecars[blueIndex].Rotation.Roll) * URotationToRadians
-		inputs[21] = float(gameTickPacket.gamecars[blueIndex].Rotation.Pitch) * URotationToRadians
-		inputs[22] = float(gameTickPacket.gamecars[blueIndex].Rotation.Yaw) * URotationToRadians
-		inputs[23] = float(gameTickPacket.gamecars[orngIndex].Rotation.Roll) * URotationToRadians
-		inputs[24] = float(gameTickPacket.gamecars[orngIndex].Rotation.Pitch) * URotationToRadians
-		inputs[25] = float(gameTickPacket.gamecars[orngIndex].Rotation.Yaw) * URotationToRadians
+		bluePitch = float(gameTickPacket.gamecars[blueIndex].Rotation.Pitch)
+		blueYaw = float(gameTickPacket.gamecars[blueIndex].Rotation.Yaw)
+		blueRoll = float(gameTickPacket.gamecars[blueIndex].Rotation.Roll)
+		orngPitch = float(gameTickPacket.gamecars[orngIndex].Rotation.Pitch)
+		orngYaw = float(gameTickPacket.gamecars[orngIndex].Rotation.Yaw)
+		orngRoll = float(gameTickPacket.gamecars[orngIndex].Rotation.Roll)
+		
+		# Blue rotations
+		inputs[20] = math.cos(bluePitch * URotationToRadians) * math.cos(blueYaw * URotationToRadians) # Rot 1
+		inputs[21] = math.sin(blueRoll * URotationToRadians) * math.sin(bluePitch * URotationToRadians) * math.cos(blueYaw * URotationToRadians) - math.cos(blueRoll * URotationToRadians) * math.sin(blueYaw * URotationToRadians) # Rot2
+		inputs[22] = -1 * math.cos(blueRoll * URotationToRadians) * math.sin(bluePitch * URotationToRadians) * math.cos(blueYaw * URotationToRadians) + math.sin(blueRoll * URotationToRadians) * math.sin(blueYaw * URotationToRadians)  # Rot 3
+		inputs[23] = math.cos(bluePitch * URotationToRadians) * math.sin(blueYaw * URotationToRadians) # Rot 4
+		inputs[24] = math.sin(blueRoll * URotationToRadians) * math.sin(bluePitch * URotationToRadians) * math.sin(blueYaw * URotationToRadians) + math.cos(blueRoll * URotationToRadians) * math.cos(blueYaw * URotationToRadians) # Rot5
+		inputs[25] = math.cos(blueYaw * URotationToRadians) * math.sin(blueRoll * URotationToRadians) - math.cos(blueRoll * URotationToRadians) * math.sin(bluePitch * URotationToRadians) * math.sin(blueYaw * URotationToRadians) # Rot 6
+		inputs[26] = math.sin(bluePitch * URotationToRadians) # Rot 7
+		inputs[27] = -1 * math.sin(blueRoll * URotationToRadians) * math.cos(bluePitch * URotationToRadians) # Rot 8
+		inputs[28] = math.cos(blueRoll * URotationToRadians) * math.cos(bluePitch * URotationToRadians) # Rot 9
+		
+		# Orange rot
+		inputs[29] = math.cos(orngPitch * URotationToRadians) * math.cos(orngYaw * URotationToRadians) # Rot 1
+		inputs[30] = math.sin(orngRoll * URotationToRadians) * math.sin(orngPitch * URotationToRadians) * math.cos(orngYaw * URotationToRadians) - math.cos(orngRoll * URotationToRadians) * math.sin(orngYaw * URotationToRadians) # Rot2
+		inputs[31] = -1 * math.cos(orngRoll * URotationToRadians) * math.sin(orngPitch * URotationToRadians) * math.cos(orngYaw * URotationToRadians) + math.sin(orngRoll * URotationToRadians) * math.sin(orngYaw * URotationToRadians)  # Rot 3
+		inputs[32] = math.cos(orngPitch * URotationToRadians) * math.sin(orngYaw * URotationToRadians) # Rot 4
+		inputs[33] = math.sin(orngRoll * URotationToRadians) * math.sin(orngPitch * URotationToRadians) * math.sin(orngYaw * URotationToRadians) + math.cos(orngRoll * URotationToRadians) * math.cos(orngYaw * URotationToRadians) # Rot5
+		inputs[34] = math.cos(orngYaw * URotationToRadians) * math.sin(orngRoll * URotationToRadians) - math.cos(orngRoll * URotationToRadians) * math.sin(orngPitch * URotationToRadians) * math.sin(orngYaw * URotationToRadians) # Rot 6
+		inputs[35] = math.sin(orngPitch * URotationToRadians) # Rot 7
+		inputs[36] = -1 * math.sin(orngRoll * URotationToRadians) * math.cos(orngPitch * URotationToRadians) # Rot 8
+		inputs[37] = math.cos(orngRoll * URotationToRadians) * math.cos(orngPitch * URotationToRadians) # Rot 9
 
 		# Teams
 		if (self.team == "blue"):
-			inputs[26] = 1
+			inputs[38] = 1
 		else:
-			inputs[26] = 2 
+			inputs[38] = 2 
 		
 		return inputs
